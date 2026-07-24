@@ -1,6 +1,6 @@
 <h1 align="center"> IoT Sensor Data Pipeline </h1>
 
-** Note: This project is currently in progress.**
+**Note: This project is currently in progress.**
 
 A near real-time data streaming pipeline that ingests city sensor data, processes it, stores it, and serves it via a RESTful API.
 
