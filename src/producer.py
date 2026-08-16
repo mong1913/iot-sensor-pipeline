@@ -3,14 +3,18 @@ import requests
 from datetime import datetime
 from zoneinfo import ZoneInfo
 from kafka import KafkaProducer
-import json
+import json, os
 import time
 import logging
+from dotenv import load_dotenv
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+load_dotenv()
+
+kafka_servers = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092").split(",")
 producer = KafkaProducer(
-    bootstrap_servers=['localhost:9092'],
+    bootstrap_servers=kafka_servers,
     value_serializer=lambda x: json.dumps(x).encode('utf-8')
 )
 
@@ -97,6 +101,8 @@ def get_topic_by_sensor(title):
     return 'others', 'unknown'
 
 def fetch_data():
+
+    # Munich city sensor data
     bbox = "11.4, 48, 11.7, 48.3"
     url_bbox = f"https://api.opensensemap.org/boxes?minimal=true&bbox={bbox}"
 
