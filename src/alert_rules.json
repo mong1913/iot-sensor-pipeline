@@ -1,0 +1,24 @@
+{
+    "rules": [
+        {
+            "rule_id": "temperature-high",
+            "label": "atm.temperature",
+            "threshold": 40,
+            "clearthreshold": 36,
+            "min_samples": 5,
+            "severity": "warning",
+            "channels": ["dashboard", "email"],
+            "recipients": ["${RECIPIENTS_EMAIL}"]
+        },
+        {
+            "rule_id": "pm10-high",
+            "label": "particle.pm10",
+            "threshold": 50,
+            "clearthreshold": 45,
+            "min_samples": 5,
+            "severity": "warning",
+            "channels": ["dashboard", "email"],
+            "recipients": ["${RECIPIENTS_EMAIL}"]
+        }
+    ]
+}
