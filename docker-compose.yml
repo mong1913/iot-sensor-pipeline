@@ -16,7 +16,7 @@ services:
       CLUSTER_ID: Dc28G8ieT42MwY-hwd843w
 
   mongodb:
-    image: mongo:latest
+    image: mongo:7
     ports:
       - "27017:27017"
     volumes:
@@ -24,26 +24,32 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: username
       MONGO_INITDB_ROOT_PASSWORD: password
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "-u", "username", "-p", "password", "--authenticationDatabase", "admin", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 20s
 
   mongo-express:
-    image: mongo-express:latest
+    image: mongo-express:1.0.2
     ports:
       - "8081:8081"
     environment:
-      ME_CONFIG_MONGODB_URL: mongodb://username:password@mongodb:27017/
+      ME_CONFIG_MONGODB_URL: mongodb://username:password@mongodb:27017/?authSource=admin
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_healthy
 
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana-enterprise:11.3.0
     ports:
       - "3000:3000"
-    environment:
-      GF_SECURITY_ADMIN_USER: admin
-      GF_SECURITY_ADMIN_PASSWORD: admin
-      GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: haohanyang-mongodb-datasource
-      GF_INSTALL_PLUGINS: https://github.com/haohanyang/mongodb
-
+    container_name: grafana
+    volumes:
+      - grafana_data:/var/lib/grafana
+    restart: unless-stopped
 
 volumes:
-  mongo_data:  
+  mongo_data:
+  grafana_data:
